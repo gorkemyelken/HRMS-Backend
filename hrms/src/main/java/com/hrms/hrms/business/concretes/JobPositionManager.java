@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hrms.hrms.business.abstracts.JobPositionService;
+import com.hrms.hrms.core.utilities.results.DataResult;
+import com.hrms.hrms.core.utilities.results.Result;
+import com.hrms.hrms.core.utilities.results.SuccessDataResult;
+import com.hrms.hrms.core.utilities.results.SuccessResult;
 import com.hrms.hrms.dataAccess.abstracts.JobPositionDao;
 import com.hrms.hrms.entities.concretes.JobPosition;
 
 @Service
-public class JobPositionManager implements JobPositionService{
+public class JobPositionManager implements JobPositionService {
 
 	private JobPositionDao jobPositionDao;
-	
+
 	@Autowired
 	public JobPositionManager(JobPositionDao jobPositionDao) {
 		super();
@@ -21,8 +25,16 @@ public class JobPositionManager implements JobPositionService{
 	}
 
 	@Override
-	public List<JobPosition> getAll() {
-		return this.jobPositionDao.findAll();
+	public DataResult<List<JobPosition>> getAll() {
+		return new SuccessDataResult<List<JobPosition>>(this.jobPositionDao.findAll(),"Job positions listed.");
 	}
 
+	@Override
+	public Result add(JobPosition jobPosition) {
+		jobPositionDao.save(jobPosition);
+		return new SuccessResult("Job position added.");
+	}
+	
+	
+	
 }
