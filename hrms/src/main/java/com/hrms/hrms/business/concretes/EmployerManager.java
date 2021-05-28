@@ -1,12 +1,15 @@
 package com.hrms.hrms.business.concretes;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hrms.hrms.business.abstracts.EmployerService;
+import com.hrms.hrms.business.abstracts.VerificationCodeService;
 import com.hrms.hrms.core.utilities.results.DataResult;
+import com.hrms.hrms.core.utilities.results.ErrorResult;
 import com.hrms.hrms.core.utilities.results.Result;
 import com.hrms.hrms.core.utilities.results.SuccessDataResult;
 import com.hrms.hrms.core.utilities.results.SuccessResult;
@@ -17,11 +20,13 @@ import com.hrms.hrms.entities.concretes.Employer;
 public class EmployerManager implements EmployerService {
 
 	private EmployerDao employerDao;
+	private VerificationCodeService verificationCodeService;
 	
 	@Autowired
-	public EmployerManager(EmployerDao employerDao) {
+	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService) {
 		super();
 		this.employerDao = employerDao;
+		this.verificationCodeService = verificationCodeService;
 	}
 
 	@Override
@@ -31,8 +36,28 @@ public class EmployerManager implements EmployerService {
 
 	@Override
 	public Result add(Employer employer) {
-		this.employerDao.save(employer);
-		return new SuccessResult("Employer added.");
+		if(getByEmail(employer.getEmail()) != null) {
+			return new ErrorResult("This email is already registered.");
+		}
+		else if(!isEmailValid(employer.getEmail())) {
+			return new ErrorResult("Email is not in a valid format");
+		}
+		else if(!employer.getEmail().endsWith(employer.getWebAddress())) {
+			return new ErrorResult("Website and email domain must be the same");
+		}
+		
+	    employer.setMailVerified(false);
+	    this.employerDao.save(employer);
+
+	    verificationCodeService.createVerificationCode(employer);
+
+	    return new SuccessResult("Verification code has been sent to your e-mail. : " + employer.getEmail());
+	}
+
+	private final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+.(com|org|net|edu|gov|mil|biz|info|mobi)(.[A-Z]{2})?$";
+	private boolean isEmailValid(String email) {
+		Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
+		return pattern.matcher(email).find();
 	}
 
 	@Override
