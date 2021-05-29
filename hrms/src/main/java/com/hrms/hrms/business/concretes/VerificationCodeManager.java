@@ -18,7 +18,7 @@ import com.hrms.hrms.entities.concretes.VerificationCode;
 
 @Service
 public class VerificationCodeManager implements VerificationCodeService{
-
+	
 	private VerificationCodeDao verificationCodeDao;
 	private UserDao userDao;
 	
@@ -76,5 +76,4 @@ public class VerificationCodeManager implements VerificationCodeService{
 	public DataResult<VerificationCode> getByCode(String code) {
 		return new SuccessDataResult<VerificationCode>(this.verificationCodeDao.getByCode(code),"Verification codes are listed by code.");
 	}
-
 }

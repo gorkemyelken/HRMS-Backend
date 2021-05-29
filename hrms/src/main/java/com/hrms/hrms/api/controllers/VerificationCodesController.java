@@ -1,14 +1,16 @@
 package com.hrms.hrms.api.controllers;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hrms.hrms.business.abstracts.VerificationCodeService;
 import com.hrms.hrms.core.utilities.results.DataResult;
+import com.hrms.hrms.core.utilities.results.Result;
+import com.hrms.hrms.entities.abstracts.User;
 import com.hrms.hrms.entities.concretes.VerificationCode;
 
 @RestController
@@ -23,13 +25,19 @@ public class VerificationCodesController {
 		this.verificationCodeService = verificationCodeService;
 	}
 	
-	@GetMapping("/getall")
-	DataResult<List<VerificationCode>> getAll(){
-		return this.verificationCodeService.getAll();
+	public DataResult<List<VerificationCode>> getAll(){
+		return null;
 	}
 	
-	@GetMapping("getByCode")
-	DataResult<VerificationCode> getByCode(String code){
-		return this.verificationCodeService.getByCode(code);
+	public Result verificateUser(String code) {
+		return null;
+	}
+	
+	public String createVerificationCode(User user) {
+		return null;
+	}
+	
+	public DataResult<VerificationCode> getByCode(String code){
+		return null;
 	}
 }

@@ -8,12 +8,12 @@ import com.hrms.hrms.entities.abstracts.User;
 import com.hrms.hrms.entities.concretes.VerificationCode;
 
 public interface VerificationCodeService {
-
+	
 	DataResult<List<VerificationCode>> getAll();
 	
-	String createVerificationCode(User user);
+	Result verificateUser(String code);
 	
-	Result verificateUser(String activationCode);
+	String createVerificationCode(User user);
 	
 	DataResult<VerificationCode> getByCode(String code);
 }

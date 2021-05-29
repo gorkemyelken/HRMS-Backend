@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hrms.hrms.business.abstracts.ConfirmByEmployeeService;
 import com.hrms.hrms.business.abstracts.EmployerService;
 import com.hrms.hrms.business.abstracts.VerificationCodeService;
 import com.hrms.hrms.core.utilities.results.DataResult;
@@ -21,12 +22,14 @@ public class EmployerManager implements EmployerService {
 
 	private EmployerDao employerDao;
 	private VerificationCodeService verificationCodeService;
+	private ConfirmByEmployeeService confirmByEmployeeService;
 	
 	@Autowired
-	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService) {
+	public EmployerManager(EmployerDao employerDao, VerificationCodeService verificationCodeService, ConfirmByEmployeeService confirmByEmployeeService) {
 		super();
 		this.employerDao = employerDao;
 		this.verificationCodeService = verificationCodeService;
+		this.confirmByEmployeeService = confirmByEmployeeService;
 	}
 
 	@Override
@@ -36,22 +39,32 @@ public class EmployerManager implements EmployerService {
 
 	@Override
 	public Result add(Employer employer) {
-		if(getByEmail(employer.getEmail()) != null) {
+		if(employer.getCompanyName().isEmpty() || employer.getEmail().isEmpty() || employer.getPassword().isEmpty()
+	    		|| employer.getPhoneNumber().isEmpty() || employer.getWebAddress().isEmpty()) {
+	    	return new ErrorResult("All fields must be filled.");
+	    }
+		else if(getByEmail(employer.getEmail()).getData() != null) {
 			return new ErrorResult("This email is already registered.");
-		}
-		else if(!isEmailValid(employer.getEmail())) {
-			return new ErrorResult("Email is not in a valid format");
 		}
 		else if(!employer.getEmail().endsWith(employer.getWebAddress())) {
 			return new ErrorResult("Website and email domain must be the same");
 		}
-		
-	    employer.setMailVerified(false);
-	    this.employerDao.save(employer);
-
-	    verificationCodeService.createVerificationCode(employer);
-
-	    return new SuccessResult("Verification code has been sent to your e-mail. : " + employer.getEmail());
+		else if(!isEmailValid(employer.getEmail())) {
+			return new ErrorResult("Email is not in a valid format");
+		}
+		else{
+			employer.setMailVerified(false);
+			
+			employer.setActive(false);
+			
+			String returnedCode = this.verificationCodeService.createVerificationCode(employer);
+			
+			// returnedCode mail adresine gönderilecek
+			
+			confirmByEmployeeService.createActivationByEmployee(employer);
+			
+			return new SuccessResult("Verification code has been sent to your e-mail. : " + employer.getEmail());	
+		} 
 	}
 
 	private final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+.(com|org|net|edu|gov|mil|biz|info|mobi)(.[A-Z]{2})?$";

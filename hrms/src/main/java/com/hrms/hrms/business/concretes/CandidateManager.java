@@ -16,7 +16,6 @@ import com.hrms.hrms.core.utilities.results.SuccessDataResult;
 import com.hrms.hrms.core.utilities.results.SuccessResult;
 import com.hrms.hrms.dataAccess.abstracts.CandidateDao;
 import com.hrms.hrms.dataAccess.abstracts.UserDao;
-import com.hrms.hrms.entities.abstracts.User;
 import com.hrms.hrms.entities.concretes.Candidate;
 
 @Service
@@ -24,16 +23,16 @@ public class CandidateManager implements CandidateService {
 
 	private CandidateDao candidateDao;
 	private MernisDemo mernisDemo;
-	private VerificationCodeService verificationCodeService;
 	private UserDao userDao;
+	private VerificationCodeService verificationCodeService;
 	
 	@Autowired
 	public CandidateManager(CandidateDao candidateDao, MernisDemo mernisDemo, VerificationCodeService verificationCodeService, UserDao userDao) {
 		super();
 		this.candidateDao = candidateDao;
 		this.mernisDemo = mernisDemo;
-		this.verificationCodeService = verificationCodeService;
 		this.userDao = userDao;
+		this.verificationCodeService = verificationCodeService;
 	}
 
 	@Override
@@ -43,26 +42,33 @@ public class CandidateManager implements CandidateService {
 
 	@Override
 	public Result add(Candidate candidate) {
-		if(candidate.getFirstName().length() < 2 || candidate.getLastName().length() < 2) {
+	    if(candidate.getFirstName().isEmpty() || candidate.getLastName().isEmpty() || candidate.getEmail().isEmpty()
+	    		|| candidate.getPassword().isEmpty() || candidate.getIdentityNumber().isEmpty()) {
+	    	return new ErrorResult("All fields must be filled.");
+	    }
+		else if(candidate.getFirstName().length() < 2 || candidate.getLastName().length() < 2) {
 			return new ErrorResult("Name or surname cannot be shorter than 2 characters.");
 		}
-		else if(getByEmail(candidate.getEmail()) != null) {
+		else if(getByEmail(candidate.getEmail()).getData() != null) {
 			return new ErrorResult("This email is already registered.");
 		}
-		else if(getByIdentityNumber(candidate.getIdentityNumber()) != null) {
+		else if(getByIdentityNumber(candidate.getIdentityNumber()).getData() != null) {
 			return new ErrorResult("This identity number is already registered.");
 		}
 		else if(!isEmailValid(candidate.getEmail())) {
 			return new ErrorResult("Email is not in a valid format");
 		}
 		else if(mernisDemo.isValidIdentityNumber(candidate.getIdentityNumber())) {
+			
 			candidate.setMailVerified(false);
 			
-			User savedUser = this.userDao.save(candidate);
+			String returnedCode = this.verificationCodeService.createVerificationCode(candidate);
 			
-			String returnedCode = this.verificationCodeService.createVerificationCode(savedUser);
+			// returnedCode mail adresine gönderilecek
 			
-			this.candidateDao.save(candidate);
+			this.userDao.save(candidate);
+			
+			this.candidateDao.save(candidate);	
 			
 			return new SuccessResult("Verification code has been sent to your e-mail. : " + candidate.getEmail());
 		}

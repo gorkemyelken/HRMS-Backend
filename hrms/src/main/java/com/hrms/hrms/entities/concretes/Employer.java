@@ -2,6 +2,8 @@ package com.hrms.hrms.entities.concretes;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.hrms.hrms.entities.abstracts.User;
@@ -27,4 +29,11 @@ public class Employer extends User{
 	
 	@Column(name = "phone_number")
 	private String phoneNumber;
+	
+	@Column(name = "is_active")
+	private boolean isActive;
+	
+	@ManyToOne()
+	@JoinColumn(name = "employer_id")
+	private Employer employer;
 }

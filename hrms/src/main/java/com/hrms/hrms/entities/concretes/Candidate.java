@@ -1,7 +1,5 @@
 package com.hrms.hrms.entities.concretes;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -30,6 +28,6 @@ public class Candidate extends User {
 	@Column(name = "identity_number")
 	private String identityNumber;
 	
-	@Column(name = "birthdate")
-	private Date birthdate;
+//	@Column(name = "birthdate")
+//	private Date birthdate;
 }
