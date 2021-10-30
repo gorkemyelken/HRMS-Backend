@@ -11,4 +11,6 @@ public interface EmployerService {
 	DataResult<List<Employer>> getall();
 	
 	Result add(Employer employer);
+	
+	DataResult<Employer> findById(int id);
 }

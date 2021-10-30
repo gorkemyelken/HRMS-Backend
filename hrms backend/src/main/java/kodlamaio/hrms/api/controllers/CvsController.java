@@ -11,37 +11,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import kodlamaio.hrms.business.abstracts.JobPositionService;
+import kodlamaio.hrms.business.abstracts.CvService;
 import kodlamaio.hrms.core.utilities.results.DataResult;
 import kodlamaio.hrms.core.utilities.results.Result;
-import kodlamaio.hrms.entities.concretes.JobPosition;
+import kodlamaio.hrms.entities.concretes.Cv;
 
 @RestController
-@RequestMapping("/api/jobpositions")
+@RequestMapping("/api/cvs")
 @CrossOrigin
-public class JobPositionsController {
+public class CvsController {
 
-	private JobPositionService jobPositionService;
+	private CvService cvService;
 
 	@Autowired
-	public JobPositionsController(JobPositionService jobPositionService) {
+	public CvsController(CvService cvService) {
 		super();
-		this.jobPositionService = jobPositionService;
+		this.cvService = cvService;
 	}
 	
 	@GetMapping("/getall")
-	public DataResult<List<JobPosition>> getAll(){
-		return this.jobPositionService.getAll();
+	public DataResult<List<Cv>> getall(){
+		return this.cvService.getall();
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody JobPosition jobPosition) {
-		return this.jobPositionService.add(jobPosition);
+	public Result add(@RequestBody Cv cv) {
+		return this.cvService.add(cv);
 	}
 	
-	@GetMapping("/getbyposition")
-	public DataResult<JobPosition> getByPosition(@RequestParam String position){
-		return this.jobPositionService.getByPosition(position);
+	@GetMapping("/findbyid")
+	public DataResult<Cv> findById(@RequestParam int id){
+		return this.cvService.findById(id);
 	}
-	
 }

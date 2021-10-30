@@ -45,5 +45,24 @@ public class JobAdvertisementManager implements JobAdvertisementService{
 		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.getByEmployer_CompanyName(companyName),"Data listed.");
 	}
 
+	@Override
+	public DataResult<List<JobAdvertisement>> getByIsActive(Boolean isActive) {
+		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.getByIsActive(isActive),"Data listed.");
+	}
+
+	@Override
+	public DataResult<List<JobAdvertisement>> getByJobPosition_Position(String position) {
+		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.getByJobPosition_Position(position),"Data listed.");
+	}
+
+	@Override
+	public DataResult<List<JobAdvertisement>> findById(int id) {
+		return new SuccessDataResult<List<JobAdvertisement>>(this.jobAdvertisementDao.findById(id),"Data listed.");
+	}
+
+	
+
+
+
 
 }

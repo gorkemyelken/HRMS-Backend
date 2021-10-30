@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import kodlamaio.hrms.entities.abstracts.User;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper = false) 
+@PrimaryKeyJoinColumn(name = "candidate_id")  
 @Table(name="candidates")
 public class Candidate extends User{
 	
@@ -37,4 +39,5 @@ public class Candidate extends User{
 
 	@Column(name = "year_of_birth")
 	private int yearOfBirth;
+
 }

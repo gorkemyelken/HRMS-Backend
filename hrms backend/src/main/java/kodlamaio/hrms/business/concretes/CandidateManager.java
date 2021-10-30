@@ -55,4 +55,9 @@ public class CandidateManager implements CandidateService {
 		return new SuccessResult("Candidate added.");
 	}
 
+	@Override
+	public DataResult<Candidate> findByFirstName(String firstName) {
+		return new SuccessDataResult<Candidate>(this.candidateDao.findByFirstName(firstName), "Data listelendi.");
+	}
+
 }

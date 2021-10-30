@@ -49,4 +49,9 @@ public class EmployerManager implements EmployerService{
 		return new SuccessResult("Employer is waiting to be verified by the system employer.");
 	}
 
+	@Override
+	public DataResult<Employer> findById(int id) {
+		return new SuccessDataResult<Employer>(this.employerDao.findById(id),"Data listed.");
+	}
+
 }

@@ -15,4 +15,11 @@ public interface JobAdvertisementService {
 	DataResult<List<JobAdvertisement>> getByCreateDate(String createDate);
 	
 	DataResult<List<JobAdvertisement>> getByEmployer_CompanyName(String companyName);
+	
+	DataResult<List<JobAdvertisement>> getByIsActive(Boolean isActive);
+	
+	DataResult<List<JobAdvertisement>> getByJobPosition_Position(String position);
+	
+	DataResult<List<JobAdvertisement>> findById(int id);
+
 }

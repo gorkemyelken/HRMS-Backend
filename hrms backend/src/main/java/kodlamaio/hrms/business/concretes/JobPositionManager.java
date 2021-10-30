@@ -32,11 +32,18 @@ public class JobPositionManager implements JobPositionService{
 
 	@Override
 	public Result add(JobPosition jobPosition) {
-		if(this.jobPositionDao.findByPosition(jobPosition.getPosition()) != null) {
+		if(this.jobPositionDao.getByPosition(jobPosition.getPosition()) != null) {
 			return new ErrorResult("This job position has already been registered.");
 		}
 		this.jobPositionDao.save(jobPosition);
 		return new SuccessResult("Job position added.");
 	}
+
+	@Override
+	public DataResult<JobPosition> getByPosition(String position) {
+		return new SuccessDataResult<JobPosition>(this.jobPositionDao.getByPosition(position), "Data listed.");
+	}
+
+
 
 }
